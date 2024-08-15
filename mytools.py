@@ -28,7 +28,7 @@ def encontrar_estacao(row):
         return 'verao'
     return None
 
-def remover_outliers(df):
+def remover_outliers_boxplot(df):
   num_cols = df.select_dtypes(include=[np.number]).columns
   for col in num_cols:
       Q1 = df[col].quantile(0.25)
@@ -39,3 +39,16 @@ def remover_outliers(df):
       df = df[(df[col] >= lower_bound) & (df[col] <= upper_bound)]
   return df
 
+def remove_outliers_std_deviation(df, column_name, threshold=3):
+    # Calcular a média e o desvio padrão
+    mean = df[column_name].mean()
+    std_dev = df[column_name].std()
+    
+    # Definir os limites inferior e superior
+    lower_bound = mean - (threshold * std_dev)
+    upper_bound = mean + (threshold * std_dev)
+    
+    # Filtrar os dados dentro dos limites
+    filtered_df = df[(df[column_name] >= lower_bound) & (df[column_name] <= upper_bound)]
+    
+    return filtered_df
