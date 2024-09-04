@@ -1,5 +1,8 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+from pylab import rcParams
+
 
 def cortar_serie_temporal(df, data_inicio, data_fim):
    
@@ -52,3 +55,14 @@ def remove_outliers_std_deviation(df, column_name, threshold=3):
     filtered_df = df[(df[column_name] >= lower_bound) & (df[column_name] <= upper_bound)]
     
     return filtered_df
+
+
+def plot_missing_values(df):
+    """ For each column with missing values plot proportion that is missing."""
+    data = [(col, df[col].isnull().sum() / len(df)) 
+            for col in df.columns if df[col].isnull().sum() > 0]
+    col_names = ['column', 'percent_missing']
+    missing_df = pd.DataFrame(data, columns=col_names).sort_values('percent_missing')
+    rcParams['figure.figsize'] = (16, 8)
+    missing_df.plot(kind='barh', x='column', y='percent_missing'); 
+    plt.title('Percent of missing values in colummns')
